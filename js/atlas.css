@@ -1,0 +1,240 @@
+/* atlas.css: kustatlasens sida, panel, lagerkort och popup.
+   Region Hallands palett; typografi som kapitelrapporten. */
+
+:root {
+  --gron-1: #00664D; --gron-2: #00AB60; --gron-3: #C1E8C4; --gron-4: #E3F4E2;
+  --bla-1: #004990;  --bla-2: #2DB8F6;  --bla-3: #A2D9F8;  --bla-4: #E2F6FF;
+  --gra-1: #83888A;  --gra-2: #D6D6D6;
+  --papper: #F0F2E6; --ink: #0D0D0D; --ink-mjuk: #3B4742;
+  --linje: rgba(13, 13, 13, .12);
+  --panel-w: 392px;
+  --f-display: "Fraunces", Georgia, serif;
+  --f-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, monospace;
+}
+
+html, body { height: 100%; margin: 0; background: var(--papper); }
+body { font-family: var(--f-sans); color: var(--ink); -webkit-font-smoothing: antialiased; overflow: hidden; }
+
+#htmlwidget_container { position: fixed; inset: 0 0 0 var(--panel-w); }
+#atlas-karta { width: 100% !important; height: 100% !important; background: #F3F4EE; }
+
+.atlas-hoppa { position: absolute; left: -999px; top: 8px; z-index: 50; background: var(--ink); color: #fff; padding: 8px 12px; border-radius: 6px; }
+.atlas-hoppa:focus { left: 8px; }
+.ka-visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ── Panelen ──────────────────────────────────────────────────────────────── */
+.atlas-panel {
+  position: fixed; inset: 0 auto 0 0; width: var(--panel-w); z-index: 10;
+  background: var(--papper); border-right: 1px solid var(--linje);
+  overflow-y: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column;
+  scrollbar-width: thin; scrollbar-color: rgba(0,0,0,.2) transparent;
+}
+.ka-handtag { display: none; }
+
+.ka-huvud { padding: 28px 26px 18px; }
+.ka-overrad {
+  font: 500 10.5px/1 var(--f-mono); letter-spacing: .12em; text-transform: uppercase;
+  color: var(--gron-1); margin: 0 0 14px; display: flex; align-items: center; gap: 8px;
+}
+.ka-overrad::before { content: ""; width: 18px; height: 2px; background: var(--bla-2); border-radius: 2px; }
+.ka-huvud h1 {
+  font: 560 31px/1.05 var(--f-display); letter-spacing: -.015em; margin: 0;
+  font-variation-settings: "opsz" 96;
+}
+.ka-underrubrik { font: italic 400 16px/1.35 var(--f-display); color: var(--bla-1); margin: 8px 0 0; }
+.ka-ingress { font-size: 13.5px; line-height: 1.55; color: var(--ink-mjuk); margin: 14px 0 0; }
+
+.ka-status {
+  position: sticky; top: 0; z-index: 2; display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 26px; background: color-mix(in srgb, var(--papper) 92%, transparent);
+  backdrop-filter: blur(6px); border-block: 1px solid var(--linje);
+  font: 500 11.5px/1 var(--f-mono); color: var(--ink-mjuk); letter-spacing: .02em;
+}
+.ka-status-knappar { display: flex; gap: 14px; }
+.ka-slack, .ka-bara { all: unset; cursor: pointer; font: 500 12px/1 var(--f-sans); color: var(--bla-1); }
+.ka-slack:hover, .ka-bara:hover { text-decoration: underline; }
+.ka-slack:focus-visible, .ka-bara:focus-visible { outline: 2px solid var(--bla-2); outline-offset: 3px; border-radius: 3px; }
+.ka-slack[hidden], .ka-bara[hidden] { display: none; }
+.ka-bara[aria-pressed="true"] { font-weight: 600; }
+
+/* Visa bara tända: bara tända lager med sina legender */
+.ka-bara-tanda .ka-ingress,
+.ka-bara-tanda .ka-tema-text,
+.ka-bara-tanda .ka-tema:not(.ka-har-tanda),
+.ka-bara-tanda .ka-lager:not(.ka-tand) { display: none; }
+.ka-bara-tanda .ka-tema.ka-stangd .ka-tema-innehall { display: block; }
+.ka-bara-tanda .ka-tema-knapp { padding-top: 12px; padding-bottom: 4px; }
+
+/* Teman */
+.ka-teman { padding: 6px 0 10px; flex: 1; }
+.ka-tema { border-bottom: 1px solid var(--linje); }
+.ka-tema h2 { margin: 0; }
+.ka-tema-knapp {
+  all: unset; box-sizing: border-box; width: 100%; cursor: pointer;
+  display: flex; align-items: center; gap: 10px; padding: 16px 26px 10px;
+}
+.ka-tema-knapp:focus-visible { outline: 2px solid var(--bla-2); outline-offset: -2px; }
+.ka-tema-titel { font: 560 18px/1.2 var(--f-display); letter-spacing: -.005em; flex: 1; }
+.ka-tema-antal {
+  font: 600 11px/1 var(--f-mono); color: #fff; background: var(--bla-1);
+  min-width: 18px; height: 18px; border-radius: 9px; display: inline-grid; place-items: center; padding: 0 5px; box-sizing: border-box;
+}
+.ka-tema-antal:empty { display: none; }
+.ka-tema-knapp svg { width: 16px; height: 16px; color: var(--gra-1); transition: transform .2s; }
+.ka-stangd .ka-tema-knapp svg { transform: rotate(-90deg); }
+.ka-stangd .ka-tema-innehall { display: none; }
+.ka-tema-text { font-size: 12.5px; line-height: 1.5; color: var(--ink-mjuk); margin: 0 26px 8px; }
+
+/* Lagerrader */
+.ka-lagerlista { list-style: none; margin: 0 0 12px; padding: 0 14px; }
+.ka-lager { border-radius: 10px; transition: background .15s; }
+.ka-lager:hover, .ka-lager.ka-vald { background: rgba(255,255,255,.55); }
+.ka-lager.ka-vald { box-shadow: inset 0 0 0 1px var(--linje); background: #fff; }
+.ka-lager-rad { display: flex; align-items: center; gap: 4px; padding: 3px 4px 3px 12px; }
+.ka-vaxel { flex: 1; display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 7px 0; min-width: 0; }
+.ka-vaxel input { position: absolute; opacity: 0; pointer-events: none; }
+.ka-vaxel-spar {
+  flex: none; width: 30px; height: 17px; border-radius: 9px; background: var(--gra-2);
+  position: relative; transition: background .18s;
+}
+.ka-vaxel-spar::after {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 13px; height: 13px; border-radius: 50%;
+  background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .18s cubic-bezier(.3,.7,.4,1);
+}
+.ka-vaxel input:checked + .ka-vaxel-spar { background: var(--bla-1); }
+.ka-vaxel input:checked + .ka-vaxel-spar::after { transform: translateX(13px); }
+.ka-vaxel input:focus-visible + .ka-vaxel-spar { outline: 2px solid var(--bla-2); outline-offset: 2px; }
+.ka-lager-ikon { flex: none; display: inline-flex; }
+.ka-lager-titel { font-size: 14px; line-height: 1.3; font-weight: 500; overflow: hidden; text-overflow: ellipsis; }
+.ka-sym { width: 24px; height: 14px; display: block; }
+
+.ka-info {
+  all: unset; cursor: pointer; width: 30px; height: 30px; border-radius: 8px; display: grid; place-items: center; color: var(--gra-1);
+}
+.ka-info:hover { background: rgba(0,0,0,.05); color: var(--ink); }
+.ka-info:focus-visible { outline: 2px solid var(--bla-2); }
+.ka-info svg { width: 16px; height: 16px; transition: transform .2s; }
+.ka-info[aria-expanded="true"] svg { transform: rotate(180deg); color: var(--bla-1); }
+
+.ka-laddar { width: 14px; height: 14px; display: none; }
+.ka-laddas .ka-laddar {
+  display: block; border-radius: 50%; border: 2px solid var(--bla-3); border-top-color: var(--bla-1);
+  animation: ka-snurr .8s linear infinite;
+}
+@keyframes ka-snurr { to { transform: rotate(360deg); } }
+
+/* Teckenförklaring direkt under ett tänt lager: alltid synlig, intill kartan,
+   aldrig i ett hörn långt bort på stora skärmar */
+.ka-rad-legend { display: none; padding: 0 12px 10px 52px; animation: ka-in .18s ease-out; }
+.ka-tand .ka-rad-legend { display: block; }
+.ka-rad-legend .ka-legend { margin: 0; display: flex; flex-wrap: wrap; gap: 5px 14px; }
+.ka-rad-legend .ka-legend li { font-size: 12px; gap: 7px; line-height: 1.3; }
+.ka-rad-legend .ka-sym { width: 20px; height: 12px; flex: none; }
+
+/* Variantval (t.ex. typ av påverkan): syns när lagret är tänt */
+.ka-variant { display: none; align-items: center; gap: 8px; padding: 0 12px 8px 52px; font-size: 12px; color: var(--ink-mjuk); }
+.ka-tand .ka-variant { display: flex; }
+.ka-variant span { flex: none; }
+.ka-variant select {
+  flex: 1; min-width: 0; font: 500 12.5px var(--f-sans); color: var(--ink);
+  padding: 5px 26px 5px 9px; border: 1px solid var(--linje); border-radius: 8px; background: #fff;
+  appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%2383888A' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 7px center; background-size: 14px;
+}
+.ka-variant select:focus-visible { outline: 2px solid var(--bla-2); outline-offset: 1px; }
+
+/* Lagerkortet */
+.ka-kort { padding: 2px 16px 14px 52px; animation: ka-in .2s ease-out; }
+@keyframes ka-in { from { opacity: 0; transform: translateY(-3px); } }
+.ka-kort-text { font-size: 13.5px; line-height: 1.55; margin: 0 0 10px; }
+.ka-legend { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 5px; }
+.ka-legend li { display: flex; align-items: center; gap: 9px; font-size: 12.5px; color: var(--ink-mjuk); }
+.ka-kort-kalla { font: 400 11.5px/1.45 var(--f-mono); color: var(--gra-1); margin: 0 0 8px; }
+
+.ka-om summary {
+  cursor: pointer; font-size: 12.5px; font-weight: 600; color: var(--bla-1); list-style: none;
+  display: inline-flex; align-items: center; gap: 6px; padding: 4px 0;
+}
+.ka-om summary::-webkit-details-marker { display: none; }
+.ka-om summary::before { content: "+"; font: 500 14px/1 var(--f-mono); width: 12px; }
+.ka-om[open] summary::before { content: "–"; }
+.ka-om summary:focus-visible { outline: 2px solid var(--bla-2); outline-offset: 2px; border-radius: 3px; }
+.ka-om-lank { font-size: 12px; margin: 10px 0 0; }
+
+/* Dokumentationslistan (delas med dokumentationssidan) */
+.ka-dok { margin: 8px 0 0; display: grid; gap: 10px; }
+.ka-dok-rad dt { font: 500 10.5px/1.3 var(--f-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--gron-1); margin-bottom: 3px; }
+.ka-dok-rad dd { margin: 0; font-size: 12.8px; line-height: 1.55; color: var(--ink); }
+.ka-dim { color: var(--gra-1); font-size: .95em; }
+.ka-steg { margin: 2px 0 0; padding-left: 18px; }
+.ka-steg li { margin: 2px 0; }
+.ka-anrop { margin: 2px 0 0; padding-left: 18px; font-size: .94em; }
+.ka-anrop li { margin: 3px 0; word-break: break-all; }
+.ka-anrop a { font-family: var(--f-mono); font-size: .92em; }
+.ka-kontroller { list-style: none; margin: 2px 0 0; padding: 0; display: grid; gap: 6px; }
+.ka-kontroller li { display: flex; gap: 8px; align-items: flex-start; }
+.ka-k-sym { flex: none; width: 17px; height: 17px; border-radius: 50%; display: grid; place-items: center; font-size: 10px; font-weight: 700; color: #fff; background: var(--gron-2); margin-top: 1px; }
+.ka-k-VARNING .ka-k-sym { background: #E8862A; }
+.ka-k-FEL .ka-k-sym { background: #C8352E; }
+.atlas-panel a, .ka-dok a { color: var(--bla-1); text-underline-offset: 2px; text-decoration-thickness: 1px; }
+.ka-ext { font-size: .8em; margin-left: 2px; text-decoration: none; display: inline-block; }
+
+/* Fot */
+.ka-fot { padding: 18px 26px 26px; font-size: 12px; color: var(--gra-1); display: grid; gap: 10px; justify-items: start; }
+.ka-fot a { font-weight: 600; font-size: 13px; }
+.ka-fot p { margin: 4px 0 0; line-height: 1.5; }
+.ka-dela {
+  all: unset; cursor: pointer; font: 500 12.5px/1 var(--f-sans); color: var(--ink);
+  border: 1px solid var(--linje); background: #fff; border-radius: 999px; padding: 8px 14px;
+}
+.ka-dela:hover { border-color: var(--bla-1); }
+.ka-dela:focus-visible { outline: 2px solid var(--bla-2); outline-offset: 2px; }
+
+/* ── Kartans kontroller och popup ─────────────────────────────────────────── */
+.maplibregl-ctrl-group { border-radius: 10px !important; box-shadow: 0 1px 2px rgba(0,0,0,.08), 0 4px 14px rgba(0,0,0,.08) !important; }
+.maplibregl-ctrl-group button { width: 34px !important; height: 34px !important; }
+.ka-hem svg { width: 18px; height: 18px; display: block; margin: auto; color: #333; }
+.maplibregl-ctrl-scale { border-color: var(--ink-mjuk) !important; color: var(--ink-mjuk) !important; font: 500 10px var(--f-mono) !important; background: rgba(255,255,255,.7) !important; }
+.maplibregl-ctrl-attrib { font: 10.5px var(--f-sans) !important; }
+
+.ka-popup .maplibregl-popup-content { border-radius: 12px; padding: 14px 16px 12px; box-shadow: 0 6px 28px rgba(0,0,0,.18); font-family: var(--f-sans); }
+.ka-popup .maplibregl-popup-close-button { font-size: 18px; padding: 2px 8px; color: var(--gra-1); }
+.ka-pop-lager { font: 500 10px/1 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gron-1); margin: 0 0 6px; }
+.ka-pop-titel { font: 560 17px/1.2 var(--f-display); margin: 0 18px 8px 0; }
+.ka-pop table { border-collapse: collapse; width: 100%; font-size: 12.5px; }
+.ka-pop th { text-align: left; font-weight: 400; color: var(--ink-mjuk); padding: 3px 12px 3px 0; vertical-align: top; }
+.ka-pop td { text-align: right; font-family: var(--f-mono); font-size: 12px; padding: 3px 0; }
+.ka-pop tr + tr { border-top: 1px solid var(--linje); }
+.ka-pop td { max-width: 170px; }
+.ka-pop-variant { font-size: 11.5px; color: var(--ink-mjuk); margin: -4px 0 8px; }
+.ka-pop-lank { display: inline-block; margin-top: 10px; font-size: 12.5px; font-weight: 600; color: var(--bla-1); text-decoration: none; }
+.ka-pop-lank:hover { text-decoration: underline; }
+
+/* ── Smal skärm: panelen blir ett ark nertill ─────────────────────────────── */
+@media (max-width: 760px) {
+  #htmlwidget_container { inset: 0; }
+  .atlas-panel {
+    inset: auto 0 0 0; width: auto; height: 42vh; border-right: 0;
+    border-radius: 16px 16px 0 0; box-shadow: 0 -6px 30px rgba(0,0,0,.18);
+    transition: height .25s cubic-bezier(.3,.7,.4,1);
+  }
+  .atlas-panel.ka-uppfalld { height: 86vh; }
+  .ka-handtag { display: grid; place-items: center; padding: 8px 0 2px; cursor: pointer; position: sticky; top: 0; background: var(--papper); z-index: 3; }
+  .ka-handtag span { width: 40px; height: 4px; border-radius: 2px; background: var(--gra-2); }
+  .ka-huvud { padding: 8px 18px 12px; }
+  .ka-huvud h1 { font-size: 24px; }
+  .ka-ingress { display: none; }
+  .ka-status { top: 22px; padding: 8px 18px; }
+  .ka-tema-knapp { padding: 14px 18px 8px; }
+  .ka-tema-text { margin: 0 18px 8px; }
+  .ka-lagerlista { padding: 0 6px; }
+  .maplibregl-ctrl-bottom-right { bottom: 42vh; }
+  .ka-bara-tanda .ka-underrubrik, .ka-bara-tanda .ka-overrad { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}

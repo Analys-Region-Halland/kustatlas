@@ -1,0 +1,38 @@
+/* dokumentation.css: dokumentationssidan (bygger på atlas.css) */
+
+body.kd { overflow: auto; height: auto; }
+.kd-inre { max-width: 920px; margin: 0 auto; padding: 0 24px; }
+.kd-huvud { padding: 36px 0 28px; border-bottom: 1px solid var(--linje); background: linear-gradient(180deg, var(--bla-4), var(--papper)); }
+.kd-tillbaka { display: inline-block; font-size: 13px; font-weight: 600; color: var(--bla-1); text-decoration: none; margin-bottom: 26px; }
+.kd-tillbaka:hover { text-decoration: underline; }
+.kd-huvud h1 { font: 560 44px/1.05 var(--f-display); letter-spacing: -.02em; margin: 0; }
+.kd-ingress { font-size: 15.5px; line-height: 1.6; color: var(--ink-mjuk); max-width: 640px; margin: 14px 0 26px; }
+
+.kd-toc { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 16px 28px; }
+.kd-toc-tema { font: 500 10.5px/1.3 var(--f-mono); letter-spacing: .1em; text-transform: uppercase; color: var(--gron-1); margin: 0 0 6px; }
+.kd-toc ul { list-style: none; margin: 0; padding: 0; }
+.kd-toc li { margin: 3px 0; font-size: 13.5px; }
+.kd-toc a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--linje); }
+.kd-toc a:hover { color: var(--bla-1); border-color: var(--bla-1); }
+
+.kd-tema { padding: 40px 0 8px; }
+.kd-tema h2 { font: 560 28px/1.15 var(--f-display); margin: 0 0 6px; }
+.kd-tema-text { color: var(--ink-mjuk); font-size: 14.5px; line-height: 1.55; margin: 0 0 18px; max-width: 640px; }
+
+.kd-lager { background: #fff; border: 1px solid var(--linje); border-radius: 14px; padding: 24px 26px; margin: 0 0 18px; scroll-margin-top: 20px; }
+.kd-lager:target { box-shadow: 0 0 0 3px var(--bla-3); }
+.kd-lager h3 { font: 560 21px/1.2 var(--f-display); margin: 0 0 6px; }
+.kd-kort { font-size: 15px; line-height: 1.55; margin: 0 0 14px; max-width: 620px; }
+.kd-rutnat { display: grid; grid-template-columns: 1fr 230px; gap: 28px; }
+.kd-sida { border-left: 1px solid var(--linje); padding-left: 22px; }
+.kd-visa { font-size: 13px; font-weight: 600; color: var(--bla-1); text-decoration: none; }
+.kd-visa:hover { text-decoration: underline; }
+.kd-lager .ka-dok-rad dd { font-size: 14px; }
+
+.kd-fot { padding: 24px 24px 48px; font-size: 12.5px; color: var(--gra-1); }
+
+@media (max-width: 700px) {
+  .kd-huvud h1 { font-size: 34px; }
+  .kd-rutnat { grid-template-columns: 1fr; }
+  .kd-sida { border-left: 0; padding-left: 0; border-top: 1px solid var(--linje); padding-top: 14px; }
+}

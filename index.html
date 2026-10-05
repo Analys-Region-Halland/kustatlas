@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8"/>
+<style>body{background-color:rgba(240,242,230,1.000000);}</style>
+<script src="lib/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+<link href="lib/maplibre-gl-5.24.0/maplibre-gl.css" rel="stylesheet" />
+<script src="lib/maplibre-gl-5.24.0/maplibre-gl.js"></script>
+<script src="lib/pmtiles-4.4.0/pmtiles.js"></script>
+<link href="lib/legend-interactivity-1.0.0/legend-interactivity.css" rel="stylesheet" />
+<script src="lib/legend-interactivity-1.0.0/legend-interactivity.js"></script>
+<script src="lib/maplibregl-binding-0.5.0/maplibregl.js"></script>
+<link href="lib/layers-control-1.0.0/layers-control.css" rel="stylesheet" />
+  <title>Kustatlas Halland</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<link rel="icon" href="js/ikon.svg"/>
+<meta name="description" content="Kartan samlar vattnet längs Hallandskusten och i Båstad och Ängelholm: havet, vattendragen och sjöarna, de avrinningsområden som leder vattnet till kusten, vattnets tillstånd och det som påverkar det. Tänd lagren i panelen. Varje lager har en förklaring och en fullständig redovisning av källa och bearbetning."/>
+<meta property="og:title" content="Kustatlas Halland"/>
+<meta property="og:description" content="Vattnet längs kusten, från källorna i inlandet till havet"/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..600&amp;family=Inter:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap"/>
+<link rel="stylesheet" href="js/atlas.css"/>
+<script type="module" src="js/atlas.js"></script>
+</head>
+<body>
+<a class="atlas-hoppa" href="#atlas-panel">Hoppa till lagerpanelen</a>
+<aside id="atlas-panel" class="atlas-panel" aria-label="Lager och förklaringar"></aside>
+<div id="htmlwidget_container">
+  <div id="atlas-karta" style="width:100%;height:100%;" class="maplibregl html-widget"></div>
+</div>
+<script type="application/json" data-for="atlas-karta">{"x":{"style":"https://basemaps.cartocdn.com/gl/positron-gl-style/style.json","center":[0,0],"zoom":0,"bearing":0,"pitch":0,"projection":"mercator","additional_params":{"maxZoom":16,"minZoom":5,"bounds":[11.65,55.98,14.55,57.78],"fadeDuration":0,"renderWorldCopies":false,"locale":{"CooperativeGesturesHandler.WindowsHelpText":"Håll ned Ctrl och skrolla för att zooma kartan","CooperativeGesturesHandler.MacHelpText":"Håll ned ⌘ och skrolla för att zooma kartan","CooperativeGesturesHandler.MobileHelpText":"Använd två fingrar för att flytta kartan","NavigationControl.ZoomIn":"Zooma in","NavigationControl.ZoomOut":"Zooma ut","NavigationControl.ResetBearing":"Återställ norr uppåt","AttributionControl.ToggleAttribution":"Visa källor","Map.Title":"Karta"},"attributionControl":{"compact":true}},"navigation_control":{"show_compass":true,"show_zoom":true,"visualize_pitch":false,"position":"top-right","orientation":"vertical"},"scale_control":{"position":"bottom-right","unit":"metric","maxWidth":100}},"evals":[],"jsHooks":[]}</script>
+<script type="application/htmlwidget-sizing" data-for="atlas-karta">{"viewer":{"width":"100%","height":"100%","padding":0,"fill":false},"browser":{"width":"100%","height":"100%","padding":0,"fill":false}}</script>
+</body>
+</html>
